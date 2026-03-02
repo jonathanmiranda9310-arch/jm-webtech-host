@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "nome": "Cancela Eletrônica",
+    "descricao": "LCD + Servo",
+    "montagem": "<p>1. Conecte o GND no Arduino.</p><p>2. Conecte o pino 5V.</p>",
+    "codigo": "#include <Servo.h>\n// Código base..."
+  },
+  {
+    "id": "1771721434961",
+    "nome": "adad",
+    "descricao": "adds",
+    "montagem": "<p>(passo a passo)</p>",
+    "codigo": "// Insira o código do projeto aqui..."
+  }
+]

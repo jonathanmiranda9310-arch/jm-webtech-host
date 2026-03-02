@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host de Código - Jm Webtech</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+    <canvas id="binary-canvas"></canvas>
+
+    <div class="top-bar">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️ Modo Claro</button>
+        <div id="admin-status-area">
+            Você é admin? <span class="admin-link" onclick="openAdminModal()">Acesse com o login aqui</span>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="closeAdminModal()">&times;</span>
+            <h2 style="color: var(--royal-blue); margin-top: 0;">Login de Admin</h2>
+            <input type="email" id="loginEmail" class="admin-input" placeholder="seu@email.com">
+            <input type="password" id="loginSenha" class="admin-input" placeholder="Insira sua senha">
+            <p id="errorMsg" class="error-msg">❌ E-mail ou senha incorretos.</p>
+            <button class="modal-btn" onclick="processarLogin()">Entrar no Sistema</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="noPermissionModal">
+        <div class="modal-box modal-box-warning">
+            <svg class="cartoon-mascot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 150px; height: 150px; margin: 0 auto; display: block;">
+                <g>
+                    <rect x="50" y="110" width="100" height="90" rx="40" fill="var(--mascot-body)" />
+                    <line x1="100" y1="110" x2="100" y2="200" stroke="var(--mascot-line)" stroke-width="4"/>
+                    <circle cx="100" cy="70" r="45" fill="var(--royal-blue)" />
+                    <rect x="60" y="55" width="80" height="30" rx="15" fill="var(--mascot-visor)" />
+                    <circle cx="80" cy="70" r="7" fill="#fff" />
+                    <circle cx="120" cy="70" r="7" fill="#fff" />
+                    <circle cx="80" cy="70" r="3.5" fill="#000" />
+                    <circle cx="120" cy="70" r="3.5" fill="#000" />
+                    <path d="M 40 120 C 0 110, -10 180, 50 165" stroke="var(--mascot-body)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                    <circle cx="50" cy="165" r="12" fill="var(--royal-blue)" />
+                    <path d="M 160 120 C 200 110, 210 180, 150 165" stroke="var(--mascot-body)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                    <circle cx="150" cy="165" r="12" fill="var(--royal-blue)" />
+                </g>
+            </svg>
+            <h3 style="color: #ffaa00; font-size: 1.3rem;">Epa! Você não tem permissão.</h3>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">Somente admins logados podem criar/editar projetos.</p>
+            <button class="modal-btn btn-warning" onclick="closeNoPermissionModal()">Sair</button>
+        </div>
+    </div>
+
+    <div id="page-home" class="page active">
+        <h1 class="hero-title">Host Jm webtech</h1>
+        <button class="main-btn" id="btn-start" onclick="navigateTo('page-folders')">Pega a lista de montagem aqui</button>
+
+        <svg class="cartoon-mascot mascot-idle" id="mascot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g>
+                <rect class="mascot-part" x="50" y="110" width="100" height="90" rx="40" fill="var(--mascot-body)" />
+                <line class="mascot-part" x1="100" y1="110" x2="100" y2="200" stroke="var(--mascot-line)" stroke-width="4"/>
+                <circle cx="100" cy="70" r="45" fill="var(--royal-blue)" />
+                <rect class="mascot-part" x="60" y="55" width="80" height="30" rx="15" fill="var(--mascot-visor)" />
+                <circle cx="80" cy="70" r="7" fill="#fff" />
+                <circle cx="120" cy="70" r="7" fill="#fff" />
+                <circle id="pupil-left" class="eye-pupil" cx="80" cy="70" r="3.5" fill="#000" />
+                <circle id="pupil-right" class="eye-pupil" cx="120" cy="70" r="3.5" fill="#000" />
+                <g class="mascot-part">
+                    <path class="mascot-part" d="M 40 120 C 20 150, 30 170, 45 180" stroke="var(--mascot-body)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                    <circle cx="45" cy="180" r="12" fill="var(--royal-blue)" />
+                </g>
+                <g class="mascot-part mascot-arm-idle">
+                    <path class="mascot-part" d="M 160 120 C 180 150, 170 170, 155 180" stroke="var(--mascot-body)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                    <circle cx="155" cy="180" r="12" fill="var(--royal-blue)" />
+                </g>
+                <g class="mascot-part mascot-arm-point">
+                    <path class="mascot-part" d="M 160 110 C 180 80, 160 50, 165 40" stroke="var(--mascot-body)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                    <circle cx="165" cy="40" r="12" fill="var(--royal-blue)" />
+                    <rect x="160" y="20" width="10" height="20" rx="4" fill="var(--royal-blue)" />
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div id="page-folders" class="page">
+        <div class="nav-bar"><button class="btn-back" onclick="navigateTo('page-home')">← Voltar</button></div>
+        <h1 class="hero-title" style="font-size: 2rem;">Acervo de Projetos</h1>
+        
+        <div class="tabs-nav" style="width: 100%; max-width: 900px; margin-bottom: 20px; border-radius: 8px; overflow: hidden;">
+            <button class="tab-btn active" id="tab-game" onclick="mudarCategoria('Game', this)">🎮 Game Academy</button>
+            <button class="tab-btn" id="tab-maker" onclick="mudarCategoria('Maker', this)">🛠️ Maker Academy</button>
+            <button class="tab-btn" id="tab-robotics" onclick="mudarCategoria('Robotics', this)">🤖 Robotics Academy</button>
+        </div>
+
+        <input type="text" id="search-input" placeholder="🔍 Buscar projeto nesta academia..." onkeyup="renderizarPastas()" style="width: 100%; max-width: 900px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-color); outline: none;">
+        
+        <div class="folder-grid" id="main-folder-grid">
+            </div>
+    </div>
+
+    <div id="page-project" class="page">
+        <div class="nav-bar"><button class="btn-back" onclick="navigateTo('page-folders')">← Pastas</button></div>
+        <div class="project-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" onclick="openTab(event, 'tab-montagem')">Montagem</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-codigo')">Código</button>
+            </div>
+            
+            <div id="tab-montagem" class="tab-content active">
+                <button class="edit-mode-btn admin-only" onclick="excluirProjetoAtual()" style="background: #ff4c4c; color: white; margin-left: 10px;">🗑️ Excluir Projeto</button>
+                <button class="edit-mode-btn" id="btn-edit-montagem" onclick="toggleEditMontagem()">✏️ Editar Passo a Passo</button>
+                <h2 id="projeto-titulo-montagem" style="color: var(--royal-blue); margin-top: 0;">Montagem</h2>
+                
+                <div id="montagem-text-area"></div>
+
+                <div id="image-container" class="editable-image-container" onclick="tryEditImage()">
+                    <span id="image-placeholder">[ Clicar para Adicionar Imagem Esquemática ]</span>
+                    <img id="project-image" src="" alt="Esquema de Montagem">
+                </div>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="carregarImagem(event)">
+                
+                <div id="game-gallery-section" style="display: none; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <h3 style="color: var(--royal-blue); margin-top: 0;">Screenshots do Jogo</h3>
+                    <div class="gallery-container" id="gallery-container"></div>
+                    <button class="edit-mode-btn admin-only" id="btn-add-gallery" style="display: none; float: none; margin-top: 15px;" onclick="document.getElementById('gallery-upload').click()">+ Adicionar Screenshot</button>
+                    <input type="file" id="gallery-upload" accept="image/*" multiple style="display: none;" onchange="carregarGaleria(event)">
+                </div>
+            </div>
+            
+            <div id="tab-codigo" class="tab-content">
+                <button class="edit-mode-btn" id="btn-edit-codigo" onclick="toggleEditCodigo()">✏️ Editar Código</button>
+                <button class="copy-btn" onclick="copyCode(this, 'codigo-cancela')">Copiar</button>
+                
+                <h2 style="color: var(--royal-blue); margin-top: 0; margin-bottom: 20px;">Código Fonte</h2>
+                <pre><code id="codigo-cancela" spellcheck="false"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
